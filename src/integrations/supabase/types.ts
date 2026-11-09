@@ -14,16 +14,267 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      articles: {
+        Row: {
+          author: string
+          body: string
+          category: string
+          created_at: string
+          excerpt: string
+          featured: boolean
+          id: string
+          image_url: string | null
+          published: boolean
+          published_at: string
+          slug: string
+          title: string
+        }
+        Insert: {
+          author?: string
+          body?: string
+          category?: string
+          created_at?: string
+          excerpt?: string
+          featured?: boolean
+          id?: string
+          image_url?: string | null
+          published?: boolean
+          published_at?: string
+          slug: string
+          title: string
+        }
+        Update: {
+          author?: string
+          body?: string
+          category?: string
+          created_at?: string
+          excerpt?: string
+          featured?: boolean
+          id?: string
+          image_url?: string | null
+          published?: boolean
+          published_at?: string
+          slug?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      consultations: {
+        Row: {
+          area: string | null
+          created_at: string
+          description: string
+          email: string
+          full_name: string
+          id: string
+          method: string
+          notes: string
+          phone: string
+          preferred_date: string
+          preferred_time: string
+          status: string
+        }
+        Insert: {
+          area?: string | null
+          created_at?: string
+          description: string
+          email: string
+          full_name: string
+          id?: string
+          method: string
+          notes?: string
+          phone: string
+          preferred_date: string
+          preferred_time: string
+          status?: string
+        }
+        Update: {
+          area?: string | null
+          created_at?: string
+          description?: string
+          email?: string
+          full_name?: string
+          id?: string
+          method?: string
+          notes?: string
+          phone?: string
+          preferred_date?: string
+          preferred_time?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      enquiries: {
+        Row: {
+          area: string | null
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          message: string
+          notes: string
+          phone: string | null
+          status: string
+          subject: string
+        }
+        Insert: {
+          area?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          message: string
+          notes?: string
+          phone?: string | null
+          status?: string
+          subject: string
+        }
+        Update: {
+          area?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          message?: string
+          notes?: string
+          phone?: string | null
+          status?: string
+          subject?: string
+        }
+        Relationships: []
+      }
+      lawyers: {
+        Row: {
+          bio: string
+          created_at: string
+          email: string | null
+          experience: string
+          id: string
+          languages: string[]
+          name: string
+          photo_url: string | null
+          practice_areas: string[]
+          published: boolean
+          qualifications: string[]
+          short_bio: string
+          slug: string
+          sort_order: number
+          title: string
+        }
+        Insert: {
+          bio?: string
+          created_at?: string
+          email?: string | null
+          experience?: string
+          id?: string
+          languages?: string[]
+          name: string
+          photo_url?: string | null
+          practice_areas?: string[]
+          published?: boolean
+          qualifications?: string[]
+          short_bio?: string
+          slug: string
+          sort_order?: number
+          title?: string
+        }
+        Update: {
+          bio?: string
+          created_at?: string
+          email?: string | null
+          experience?: string
+          id?: string
+          languages?: string[]
+          name?: string
+          photo_url?: string | null
+          practice_areas?: string[]
+          published?: boolean
+          qualifications?: string[]
+          short_bio?: string
+          slug?: string
+          sort_order?: number
+          title?: string
+        }
+        Relationships: []
+      }
+      practice_areas: {
+        Row: {
+          approach: string
+          created_at: string
+          icon: string
+          id: string
+          intro: string
+          matters: string[]
+          published: boolean
+          situations: string[]
+          slug: string
+          sort_order: number
+          summary: string
+          title: string
+        }
+        Insert: {
+          approach?: string
+          created_at?: string
+          icon?: string
+          id?: string
+          intro?: string
+          matters?: string[]
+          published?: boolean
+          situations?: string[]
+          slug: string
+          sort_order?: number
+          summary?: string
+          title: string
+        }
+        Update: {
+          approach?: string
+          created_at?: string
+          icon?: string
+          id?: string
+          intro?: string
+          matters?: string[]
+          published?: boolean
+          situations?: string[]
+          slug?: string
+          sort_order?: number
+          summary?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "editor"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +401,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "editor"],
+    },
   },
 } as const
