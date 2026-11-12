@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { PageHero } from "@/components/site/Blocks";
 import { Field, inputCls, selectCls } from "@/components/site/Field";
-import { consultationSchema } from "@/lib/forms";
+import { consultationSchema, type FormErrors } from "@/lib/forms";
 import { submitConsultation } from "@/lib/forms.functions";
 import { servicesQuery } from "@/lib/queries";
 import { pageMeta } from "@/lib/site";
@@ -22,7 +22,7 @@ const TIMES = ["09:00", "10:00", "11:00", "12:00", "14:00", "15:00", "16:00"];
 
 function Book() {
   const { data: services } = useQuery(servicesQuery());
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<FormErrors>({});
   const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [msg, setMsg] = useState("");
   const today = new Date().toISOString().slice(0, 10);
@@ -33,8 +33,8 @@ function Book() {
     const parsed = consultationSchema.safeParse(raw);
     const errs: Record<string, string> = {};
     if (!parsed.success) parsed.error.issues.forEach((i) => { errs[String(i.path[0])] ??= i.message; });
-    if (raw.preferred_date && raw.preferred_date < today) errs.preferred_date = "Please choose a future date";
-    if (!parsed.success || Object.keys(errs).length) { setErrors(errs); return; }
+    if (raw["preferred_date"] && raw["preferred_date"] < today) errs["preferred_date"] = "Please choose a future date";
+    if (!parsed.success || Object.keys(errs).length) { setErrors(errs as FormErrors); return; }
     setErrors({}); setState("sending");
     try { await submitConsultation({ data: parsed.data }); setState("done"); }
     catch (err) { setState("error"); setMsg(err instanceof Error ? err.message : "Something went wrong."); }

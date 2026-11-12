@@ -12,7 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export type FieldDef = { key: string; label: string; type: "text" | "textarea" | "list" | "bool" | "number" | "select" | "datetime"; options?: string[]; hint?: string };
 type Table = "practice_areas" | "lawyers" | "articles";
-type Row = Record<string, unknown> & { id: string };
+type Row = { id: string; slug?: string; published?: boolean; [k: string]: unknown };
 
 const slugify = (s: string) => s.toLowerCase().replace(/\[|\]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
@@ -33,25 +33,25 @@ export function CrudTable({ table, fields, title, order, titleKey }: { table: Ta
   async function save() {
     if (!editing) return;
     const row: Record<string, unknown> = { ...editing };
-    if (!row[titleKey]) return toast.error(`${fields.find((f) => f.key === titleKey)?.label} is required`);
-    if (!row.slug) row.slug = slugify(String(row[titleKey]));
+    if (!row[titleKey]) return void toast.error(`${fields.find((f) => f.key === titleKey)?.label} is required`);
+    if (!row["slug"]) row["slug"] = slugify(String(row[titleKey]));
     setSaving(true);
     const { id, created_at: _c, ...rest } = row as Row & { created_at?: string };
     const res = id ? await supabase.from(table).update(rest as never).eq("id", id) : await supabase.from(table).insert(rest as never);
     setSaving(false);
-    if (res.error) return toast.error(res.error.message);
+    if (res.error) return void toast.error(res.error.message);
     toast.success("Saved"); setEditing(null);
     qc.invalidateQueries();
   }
   async function remove(r: Row) {
     if (!confirm(`Delete "${String(r[titleKey])}"? This cannot be undone.`)) return;
     const { error } = await supabase.from(table).delete().eq("id", r.id);
-    if (error) return toast.error(error.message);
+    if (error) return void toast.error(error.message);
     toast.success("Deleted"); qc.invalidateQueries();
   }
   async function togglePublished(r: Row) {
     const { error } = await supabase.from(table).update({ published: !r.published } as never).eq("id", r.id);
-    if (error) return toast.error(error.message);
+    if (error) return void toast.error(error.message);
     qc.invalidateQueries();
   }
 

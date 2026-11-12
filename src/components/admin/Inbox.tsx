@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { formatDate } from "@/lib/site";
 
 type Kind = "enquiries" | "consultations";
+type R = { id: string; full_name: string; email: string; phone: string | null; area: string | null; status: string; notes: string; created_at: string; subject?: string; message?: string; method?: string; preferred_date?: string; preferred_time?: string; description?: string };
 const STATUSES: Record<Kind, string[]> = {
   enquiries: ["new", "in progress", "responded", "closed"],
   consultations: ["pending", "confirmed", "rescheduled", "declined", "completed"],
@@ -20,13 +21,13 @@ export function Inbox({ kind }: { kind: Kind }) {
     queryFn: async () => {
       const { data, error } = await supabase.from(kind).select("*").order("created_at", { ascending: false });
       if (error) throw error;
-      return data as Array<Record<string, string | null> & { id: string }>;
+      return data as unknown as R[];
     },
   });
   const [notes, setNotes] = useState<Record<string, string>>({});
-  async function update(id: string, patch: Record<string, string>) {
+  async function update(id: string, patch: { status?: string; notes?: string }) {
     const { error } = await supabase.from(kind).update(patch).eq("id", id);
-    if (error) return toast.error(error.message);
+    if (error) return void toast.error(error.message);
     toast.success("Updated"); qc.invalidateQueries({ queryKey: ["admin"] });
   }
   if (isLoading) return <p className="text-muted-foreground">Loading…</p>;
@@ -41,7 +42,7 @@ export function Inbox({ kind }: { kind: Kind }) {
               <summary className="flex cursor-pointer flex-wrap items-center gap-4 p-5">
                 <span className="flex-1 font-medium text-primary">{r.full_name} — {kind === "enquiries" ? r.subject : `${r.method}, ${r.preferred_date} ${r.preferred_time}`}</span>
                 <span className="bg-secondary px-2 py-1 text-xs uppercase tracking-wider">{r.status}</span>
-                <span className="text-xs text-muted-foreground">{formatDate(r.created_at!)}</span>
+                <span className="text-xs text-muted-foreground">{formatDate(r.created_at)}</span>
               </summary>
               <div className="space-y-4 border-t p-5 text-sm">
                 <p><a className="link-gold" href={`mailto:${r.email}`}>{r.email}</a>{r.phone && <> · <a className="link-gold" href={`tel:${r.phone}`}>{r.phone}</a></>}{r.area && <> · {r.area}</>}</p>

@@ -28,3 +28,7 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+- Site content (services, lawyers, articles) lives in database tables with a `published` flag; public pages read via `src/lib/queries.ts`, admins edit through `/admin` with RLS `has_role` checks. Why: firm edits content without code.
+- Public form submissions go through server functions in `src/lib/forms.functions.ts` (zod + honeypot) using the admin client. Why: visitors never get direct table write access.
+- Firm contact details live in `src/lib/site.ts`. Why: one place to edit.

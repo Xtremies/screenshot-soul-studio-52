@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Label } from "@/components/ui/label";
-export function Field({ id, label, error, children, optional }: { id: string; label: string; error?: string; children: ReactNode; optional?: boolean }) {
+export function Field({ id, label, error, children, optional }: { id: string; label: string; error?: string | undefined; children: ReactNode; optional?: boolean | undefined }) {
   return (
     <div className="space-y-2">
       <Label htmlFor={id} className="text-xs uppercase tracking-widest text-primary">{label}{optional && <span className="ml-1 normal-case tracking-normal text-muted-foreground">(optional)</span>}</Label>

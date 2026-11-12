@@ -1,11 +1,14 @@
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { NAV, SITE } from "@/lib/site";
 import { servicesQuery } from "@/lib/queries";
 import { Wordmark } from "./Header";
 
 export function Footer() {
   const { data: services } = useQuery(servicesQuery());
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   return (
     <footer className="bg-navy-deep text-on-navy-muted">
       <div className="container-law grid gap-12 py-20 md:grid-cols-2 lg:grid-cols-4">
@@ -26,7 +29,7 @@ export function Footer() {
         <div>
           <p className="eyebrow mb-5">Practice Areas</p>
           <ul className="space-y-3 text-sm">
-            {(services ?? []).slice(0, 6).map((s) => (
+            {(mounted ? services ?? [] : []).slice(0, 6).map((s) => (
               <li key={s.id}><Link to="/services/$slug" params={{ slug: s.slug }} className="hover:text-gold">{s.title}</Link></li>
             ))}
           </ul>

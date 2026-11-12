@@ -26,3 +26,4 @@ export const consultationSchema = z.object({
 
 export type EnquiryInput = z.infer<typeof enquirySchema>;
 export type ConsultationInput = z.infer<typeof consultationSchema>;
+export type FormErrors = Partial<Record<"full_name" | "email" | "phone" | "subject" | "area" | "message" | "method" | "preferred_date" | "preferred_time" | "description", string>>;

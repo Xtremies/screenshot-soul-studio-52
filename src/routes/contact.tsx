@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { PageHero } from "@/components/site/Blocks";
 import { Field, inputCls, selectCls } from "@/components/site/Field";
-import { enquirySchema } from "@/lib/forms";
+import { enquirySchema, type FormErrors } from "@/lib/forms";
 import { submitEnquiry } from "@/lib/forms.functions";
 import { servicesQuery } from "@/lib/queries";
 import { pageMeta, SITE } from "@/lib/site";
@@ -19,7 +19,7 @@ export const Route = createFileRoute("/contact")({
 
 function Contact() {
   const { data: services } = useQuery(servicesQuery());
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<FormErrors>({});
   const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [msg, setMsg] = useState("");
 
@@ -30,7 +30,7 @@ function Contact() {
     if (!parsed.success) {
       const errs: Record<string, string> = {};
       parsed.error.issues.forEach((i) => { errs[String(i.path[0])] ??= i.message; });
-      setErrors(errs); return;
+      setErrors(errs as FormErrors); return;
     }
     setErrors({}); setState("sending");
     try { await submitEnquiry({ data: parsed.data }); setState("done"); }

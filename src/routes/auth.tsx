@@ -26,12 +26,12 @@ function Auth() {
     if (mode === "in") {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       setBusy(false);
-      if (error) return setMsg({ t: "err", m: error.message });
+      if (error) return void setMsg({ t: "err", m: error.message });
       nav({ to: "/admin" });
     } else {
       const { error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: `${window.location.origin}/admin` } });
       setBusy(false);
-      if (error) return setMsg({ t: "err", m: error.message });
+      if (error) return void setMsg({ t: "err", m: error.message });
       setMsg({ t: "ok", m: "Check your email to confirm your account, then sign in." });
     }
   }
